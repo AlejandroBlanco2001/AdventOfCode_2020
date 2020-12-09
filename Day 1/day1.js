@@ -1,19 +1,37 @@
-function getPairs(pairs, number){
-    var possiblesV = {}
-    for(let i = 0; i < pairs.length; i++){
-        let valueP = number - pairs[i]
-        possiblesV[valueP] = valueP
-        if(possiblesV[pairs[i]]){
-            let valueM = number - possiblesV[pairs[i]]
-            return valueM * possiblesV[pairs[i]]
+function getPairs(pairs, number,quantity){
+    if(quantity == 2){
+        for(key in pairs){
+            var valueP = number - pairs[key]
+            if(pairs[valueP] && valueP > 0){
+                return valueP * pairs[key]
+            }
+        }
+        return 0
+    }else{
+        for(key in pairs){
+            var currentKey = key;
+            var valueP = number - pairs[key]
+            var clone = Object.assign({}, pairs);
+            delete clone[key]
+            var valueA = getPairs(clone,valueP,quantity-1)
+            if(valueA != 0){
+                return valueA * currentKey
+            }
         }
     }
-    return 0
+}
+
+function jsonConverter(arrayConvert){
+    var json = {}
+    for (let i = 0; i < arrayConvert.length; i++) {
+        json[arrayConvert[i]] = arrayConvert[i]
+    }
+    return json
 }
 
 function getNumbers(data){
     const reg = /\d+/g
-    return data.match(reg)
+    return jsonConverter(data.match(reg))
 }
 
 async function fetchData(){
@@ -22,4 +40,4 @@ async function fetchData(){
     return getNumbers(data)
 }
 
-fetchData().then(data => console.log(getPairs(data,2020)))
+fetchData().then(data => console.log(getPairs(data,2020,3)))
