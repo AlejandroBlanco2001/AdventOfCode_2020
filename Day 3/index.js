@@ -31,7 +31,7 @@ async function fetchData(){
     const req = await fetch('./input.txt')
     const data = await req.text()
     const splitted = data.replace(/\s+/g, '')
-    return makeGrid(splitted);
+    return makeGrid(splitted)
 }
 
 fetchData().then(data => {   
