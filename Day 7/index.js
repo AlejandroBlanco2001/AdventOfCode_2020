@@ -21,6 +21,7 @@ function parseTextChildsFathers(lines){
             if(!map.has(bag)) {
                 map.set(bag, []);
             }
+            if(!groups.number) groups.number = 0
             map.set(bag, [...map.get(bag), groups]);
         })
     }
@@ -37,12 +38,24 @@ function part1(){
     return cont
 }
 
+function part2(mainBag){
+    if(mainBag.number == 0) return 0
+    
+    const bagsInside = map.get(mainBag.color)
+    let sum = 1
+    for(const bag of bagsInside){
+        sum += bag.number * part2(bag)
+    }
+    return sum
+}
+
 async function fetchData(){
     const req = await fetch('./input.txt')
     const data = await req.text()
     const lines = data.split('\n')
     parseTextChildsFathers(lines)
-    return part1()
+    console.log(map)
+    return {part1: part1(), part2: part2({number: 1, color: 'shiny gold'})-1}
 }
 
 fetchData().then(data => {   
