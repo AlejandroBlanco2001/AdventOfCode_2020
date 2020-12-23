@@ -14,13 +14,13 @@ function followInstructions(instructions){
             steps[i] = true
             i += parseInt(instructions[i][1])
             if(i >= instructions.length){
-                return {acc: acc, mode: 'succesfull'}
+                return {acc: acc, mode: 'error'}
             }
         }else{ 
             i++
         }
     }
-    return {acc: acc, mode: 'loop'}
+    return {acc: acc, mode: 'loopDetected'}
 }
 
 // Generate all the posibles changes, each per jmp or nop line
