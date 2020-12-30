@@ -68,13 +68,51 @@ function checkStates(seats,height,width){
     return checkOccupied(seats,height,width)
 }
 
+function checkContinousSeats(seats,height,width){
+    var change = true
+    var changes = []
+    while(change){
+        for(var i = 0; i < height; i++){
+            for(var j = 0; j < width; j++){
+                var curr = seats[i][j]
+                var occupied = 0
+                sides.forEach((item) => {
+                    let dI = i + item.i
+                    let dJ = j + item.j
+                    while(dI >= 0 && dI < height && dJ >= 0 && dJ < width){
+                        if(seats[dI][dJ] == '#'){
+                            occupied++
+                            break
+                        }
+                        if(seats[dI][dJ] == 'L') break
+                        dI += item.i
+                        dJ += item.j
+                    }
+                })
+                if(occupied >= 5 && curr == '#')
+                    changes.push({value: 'L', i: i, j: j})
+                else if(occupied == 0 && curr == 'L')
+                    changes.push({value: '#', i: i, j: j})
+            }
+        }
+        if(changes.length > 0){
+            seats = makeChanges(seats,changes)
+            changes = []
+            change = true
+        }else{
+            change = false
+        }
+    }
+    return checkOccupied(seats,height,width)
+}
+
 
 async function fetchData(){
     const req = await fetch('./input.txt')
     const data = await req.text()
     const lines = data.split('\n')
     var {seats,height,width} = parseInput(lines,lines[0].length)
-    return checkStates(seats, height,width)
+    return {part1: checkStates(JSON.parse(JSON.stringify(seats)),height,width), part2: checkContinousSeats(JSON.parse(JSON.stringify(seats)),height, width)}
 }
 
 fetchData().then(data => {   
